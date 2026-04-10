@@ -31,6 +31,8 @@ export class UsersService {
     toBirthday?: Date,
     fromLuckyNumber?: number,
     toLuckyNumber?: number,
+    limit?: number,
+    skip?: number,
   ) {
     const query = this.userRepository.createQueryBuilder('user').where('1=1');
 
@@ -60,7 +62,12 @@ export class UsersService {
       });
     }
 
-    return query.getMany();
+    const [data, total] = await query
+      .skip(skip ? skip : 0)
+      .take(limit ? limit : 5)
+      .getManyAndCount();
+
+    return { data, total, limit: limit ? limit : 10, skip: skip ? skip : 0 };
   }
 
   async findOne(id: number) {

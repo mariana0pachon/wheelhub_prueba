@@ -31,6 +31,8 @@ export class UsersController {
     @Query('toBirthday') toBirthday?: string,
     @Query('fromLuckyNumber') fromLuckyNumber?: number,
     @Query('toLuckyNumber') toLuckyNumber?: number,
+    @Query('limit') limit?: number,
+    @Query('skip') skip?: number,
   ) {
     if ((!fromBirthday && toBirthday) || (fromBirthday && !toBirthday)) {
       throw new BadRequestException(
@@ -78,6 +80,8 @@ export class UsersController {
       toBirthdate,
       fromLuckyNumber,
       toLuckyNumber,
+      limit,
+      skip,
     );
   }
 
