@@ -46,6 +46,12 @@ COPY . .
 RUN npm run build
 
 ################################################################################
+# Development stage with all dependencies and hot reload.
+FROM build as dev
+
+CMD npm run start:dev
+
+################################################################################
 # Create a new stage to run the application with minimal runtime dependencies
 # where the necessary files are copied from the build stage.
 FROM base as final

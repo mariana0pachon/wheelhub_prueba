@@ -1,0 +1,7 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      target: dev
+    volumes:
+      - ./backend/src:/usr/src/app/src
