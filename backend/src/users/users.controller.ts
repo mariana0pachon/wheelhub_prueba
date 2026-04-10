@@ -23,6 +23,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  // TODO: refactor this findAll to put validations in a helper or separate dto
   @Get()
   findAll(
     @Query('elements') elements?: Elements[],
@@ -35,6 +36,19 @@ export class UsersController {
       throw new BadRequestException(
         'both fromBirthday and toBirthday should be defined',
       );
+    }
+
+    let fromBirthdate: Date | undefined;
+    let toBirthdate: Date | undefined;
+    if (fromBirthday && toBirthday) {
+      fromBirthdate = new Date(fromBirthday);
+      toBirthdate = new Date(toBirthday);
+
+      if (fromBirthdate > toBirthdate) {
+        throw new BadRequestException(
+          'fromBirthday should be <= than toBirthday',
+        );
+      }
     }
 
     if (
@@ -60,8 +74,8 @@ export class UsersController {
 
     return this.usersService.findAll(
       elements ? [elements].flat() : [],
-      fromBirthday ? new Date(fromBirthday) : undefined,
-      toBirthday ? new Date(toBirthday) : undefined,
+      fromBirthdate,
+      toBirthdate,
       fromLuckyNumber ? fromLuckyNumber : undefined,
       toLuckyNumber ? toLuckyNumber : undefined,
     );
