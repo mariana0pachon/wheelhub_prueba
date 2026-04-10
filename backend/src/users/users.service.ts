@@ -1,9 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User, UserStarSign } from './entities/user.entity';
+import {
+  Elements,
+  User,
+  UserStarSign,
+  StarSignsByElement,
+} from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -20,8 +25,21 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
-  async findAll() {
-    return await this.userRepository.find();
+  async findAll(elements?: Elements[]) {
+    // console.log('findAll:');
+    // console.log({ elements });
+
+    if (!elements?.length) return await this.userRepository.find();
+
+    const possibleStarSigns: UserStarSign[] = elements.flatMap(
+      (ele) => StarSignsByElement[ele],
+    );
+
+    console.log({ possibleStarSigns });
+
+    return this.userRepository.find({
+      where: { starSign: In(possibleStarSigns) },
+    });
   }
 
   async findOne(id: number) {
@@ -46,9 +64,9 @@ export class UsersService {
   }
 
   private calculateStarSign(date?: Date): UserStarSign | null {
-    console.log('HOLA aqui es calculateStarSign:');
-    console.log(typeof date);
-    console.log(date);
+    // console.log('HOLA aqui es calculateStarSign:');
+    // console.log(typeof date);
+    // console.log(date);
 
     if (!date || isNaN(date.getTime())) return null;
 

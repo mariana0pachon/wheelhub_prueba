@@ -15,6 +15,36 @@ export enum UserStarSign {
   PISCIS = 'piscis',
 }
 
+export enum Elements {
+  FUEGO = 'fuego',
+  AIRE = 'aire',
+  AGUA = 'agua',
+  TIERRA = 'tierra',
+}
+
+export const StarSignsByElement: Record<Elements, UserStarSign[]> = {
+  [Elements.FUEGO]: [
+    UserStarSign.ARIES,
+    UserStarSign.LEO,
+    UserStarSign.SAGITARIO,
+  ],
+  [Elements.AIRE]: [
+    UserStarSign.GEMINIS,
+    UserStarSign.LIBRA,
+    UserStarSign.ACUARIO,
+  ],
+  [Elements.AGUA]: [
+    UserStarSign.CANCER,
+    UserStarSign.ESCORPIO,
+    UserStarSign.PISCIS,
+  ],
+  [Elements.TIERRA]: [
+    UserStarSign.TAURO,
+    UserStarSign.VIRGO,
+    UserStarSign.CAPRICORNIO,
+  ],
+};
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
