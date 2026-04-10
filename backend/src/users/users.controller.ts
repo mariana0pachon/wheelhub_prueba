@@ -35,7 +35,7 @@ export class UsersController {
       );
     }
     return this.usersService.findAll(
-      elements ? elements : [],
+      elements ? [elements].flat() : [],
       fromBirthday ? new Date(fromBirthday) : undefined,
       toBirthday ? new Date(toBirthday) : undefined,
     );
