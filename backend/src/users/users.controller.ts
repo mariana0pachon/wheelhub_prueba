@@ -29,7 +29,7 @@ export class UsersController {
     @Query('fromBirthday') fromBirthday?: string,
     @Query('toBirthday') toBirthday?: string,
   ) {
-    if ((fromBirthday === undefined) !== (toBirthday === undefined)) {
+    if ((!fromBirthday && toBirthday) || (fromBirthday && !toBirthday)) {
       throw new BadRequestException(
         'both fromBirthday and toBirthday should be defined',
       );
