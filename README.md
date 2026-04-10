@@ -5,4 +5,4 @@
 3. In `backend` run `npm install`.
 4. In `frontend` run `npm install`.
 5. Run `make dev` from root. This will start `backend` on port `3000` and `frontend` on port `8080` with hot reload.
-6. Seed the db from a separate terminal: `docker compose exec backend npm run seed`
+6. With server already running, seed the db from a separate terminal: `docker compose exec backend npm run seed:fresh`

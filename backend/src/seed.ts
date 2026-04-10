@@ -5,21 +5,12 @@
     give me 10 famous names and the actual data for them.
 */
 
+import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
 import { User } from './users/entities/user.entity';
-import * as dotenv from 'dotenv';
-dotenv.config({ path: '../.env' });
+dotenv.config({ path: require('path').resolve(__dirname, '../../.env') });
 
-const AppDataSource = new DataSource({
-  type: 'postgres',
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  entities: [User],
-  synchronize: false,
-});
+const BASE_URL = process.env.SEED_API_URL || 'http://localhost:3000';
 
 const users = [
   {
@@ -30,6 +21,8 @@ const users = [
       'painting reality',
       'surviving everything',
       'iconic eyebrows',
+      'flower crowns',
+      'self-portraiture',
     ],
     avatar: {
       bgColor: '#f2d0c0',
@@ -40,7 +33,13 @@ const users = [
     name: 'Albert Einstein',
     birthday: new Date('1879-03-14'),
     luckyNumber: 3,
-    superpowers: ['bending spacetime', 'thought experiments', 'wild hair'],
+    superpowers: [
+      'bending spacetime',
+      'thought experiments',
+      'wild hair',
+      'playing violin',
+      'forgetting socks',
+    ],
     avatar: {
       bgColor: '#d6eaf8',
       svg: '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><circle cx="100" cy="100" r="55" fill="#f0e0c0" stroke="#333" stroke-width="2"/><path d="M55 70 Q60 40 80 50 Q70 30 100 35 Q130 30 120 50 Q140 40 145 70" stroke="#ccc" stroke-width="4" fill="#e8e8e8"/><circle cx="85" cy="95" r="6" fill="#333"/><circle cx="115" cy="95" r="6" fill="#333"/><path d="M75 90 Q85 85 95 90" stroke="#333" stroke-width="2" fill="none"/><path d="M105 90 Q115 85 125 90" stroke="#333" stroke-width="2" fill="none"/><path d="M85 120 Q100 130 115 120" stroke="#333" stroke-width="2" fill="none"/></svg>',
@@ -54,6 +53,8 @@ const users = [
       'flawless performance',
       'running the world',
       'surprise albums',
+      'formation',
+      'breaking the internet',
     ],
     avatar: {
       bgColor: '#fef9e7',
@@ -68,6 +69,8 @@ const users = [
       'inventing the future',
       'painting smiles',
       'ambidextrous genius',
+      'mirror writing',
+      'designing flying machines',
     ],
     avatar: {
       bgColor: '#fdf2e9',
@@ -78,7 +81,13 @@ const users = [
     name: 'Marie Curie',
     birthday: new Date('1867-11-07'),
     luckyNumber: 2,
-    superpowers: ['radioactivity', 'breaking barriers', 'double Nobel prize'],
+    superpowers: [
+      'radioactivity',
+      'breaking barriers',
+      'double Nobel prize',
+      'isolating polonium',
+      'glowing in the dark',
+    ],
     avatar: {
       bgColor: '#e8f8f5',
       svg: '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><circle cx="100" cy="95" r="50" fill="#f0e8d8" stroke="#333" stroke-width="2"/><path d="M60 75 Q100 50 140 75 Q135 55 100 52 Q65 55 60 75" fill="#8B7355" stroke="#6b5535" stroke-width="1"/><circle cx="88" cy="92" r="6" fill="#4a3728"/><circle cx="112" cy="92" r="6" fill="#4a3728"/><path d="M86 112 Q100 120 114 112" stroke="#6b5535" stroke-width="2" fill="none"/><circle cx="100" cy="160" r="15" fill="none" stroke="#7EC8A4" stroke-width="2" stroke-dasharray="4,2"/></svg>',
@@ -92,6 +101,8 @@ const users = [
       'writing the first algorithm',
       'seeing the future of computers',
       'poetic science',
+      "being Lord Byron's daughter",
+      'debugging before computers existed',
     ],
     avatar: {
       bgColor: '#f5eef8',
@@ -106,6 +117,8 @@ const users = [
       'controlling electricity',
       'photographic memory',
       'sleeping 2 hours a night',
+      'talking to pigeons',
+      'inventing AC current',
     ],
     avatar: {
       bgColor: '#eaf4fc',
@@ -120,6 +133,8 @@ const users = [
       'speaking 9 languages',
       'political mastery',
       'legendary charisma',
+      'ruling Egypt solo',
+      'outsmarting Julius Caesar',
     ],
     avatar: {
       bgColor: '#fef5e4',
@@ -130,7 +145,13 @@ const users = [
     name: 'David Bowie',
     birthday: new Date('1947-01-08'),
     luckyNumber: 8,
-    superpowers: ['shapeshifting', 'inventing genres', 'heterochromia'],
+    superpowers: [
+      'shapeshifting',
+      'inventing genres',
+      'heterochromia',
+      'glam rock',
+      'living on mars',
+    ],
     avatar: {
       bgColor: '#fdedec',
       svg: '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><circle cx="100" cy="95" r="50" fill="#f0d8c0" stroke="#333" stroke-width="2"/><path d="M55 72 Q100 25 145 72 Q150 45 130 38 Q100 28 70 38 Q50 45 55 72" fill="#e8c8a0" stroke="#c8a880" stroke-width="1"/><circle cx="87" cy="94" r="6" fill="#1a6b1a"/><circle cx="113" cy="94" r="6" fill="#8B4513"/><circle cx="89" cy="92" r="2" fill="#fff"/><circle cx="115" cy="92" r="2" fill="#fff"/><path d="M87 113 Q100 122 113 113" stroke="#c08060" stroke-width="2" fill="none"/></svg>',
@@ -140,7 +161,13 @@ const users = [
     name: 'Rosalind Franklin',
     birthday: new Date('1920-07-25'),
     luckyNumber: 51,
-    superpowers: ['X-ray vision', 'decoding DNA', 'proving everyone wrong'],
+    superpowers: [
+      'X-ray vision',
+      'decoding DNA',
+      'proving everyone wrong',
+      'photo 51',
+      'coal microstructure analysis',
+    ],
     avatar: {
       bgColor: '#e8f8f5',
       svg: '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><circle cx="100" cy="95" r="50" fill="#f0e8e0" stroke="#333" stroke-width="2"/><path d="M62 78 Q100 48 138 78 Q134 55 100 51 Q66 55 62 78" fill="#3d2b1f" stroke="#2a1a0f" stroke-width="1"/><circle cx="88" cy="94" r="6" fill="#3d2b1f"/><circle cx="112" cy="94" r="6" fill="#3d2b1f"/><path d="M87 113 Q100 121 113 113" stroke="#8B6050" stroke-width="2" fill="none"/><path d="M155 140 Q160 125 155 110 Q150 125 155 140" stroke="#1ABC9C" stroke-width="1.5" fill="none"/><path d="M165 140 Q160 125 165 110 Q170 125 165 140" stroke="#1ABC9C" stroke-width="1.5" fill="none"/><line x1="155" y1="120" x2="165" y2="125" stroke="#1ABC9C" stroke-width="1"/><line x1="155" y1="130" x2="165" y2="135" stroke="#1ABC9C" stroke-width="1"/></svg>',
@@ -148,12 +175,42 @@ const users = [
   },
 ];
 
+async function clearUsers() {
+  const dataSource = new DataSource({
+    type: 'postgres',
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    entities: [User],
+  });
+
+  await dataSource.initialize();
+  await dataSource.getRepository(User).clear();
+  await dataSource.destroy();
+  console.log('🗑️  Cleared users table');
+}
+
 async function seed() {
-  await AppDataSource.initialize();
-  const repo = AppDataSource.getRepository(User);
-  await repo.save(users);
-  console.log(`✅ Seeded ${users.length} users`);
-  await AppDataSource.destroy();
+  if (process.argv.includes('--fresh')) {
+    await clearUsers();
+  }
+
+  for (const user of users) {
+    const res = await fetch(`${BASE_URL}/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user),
+    });
+
+    if (!res.ok) {
+      const error = await res.text();
+      throw new Error(`Failed to seed ${user.name}: ${error}`);
+    }
+
+    console.log(`✅ Seeded ${user.name}`);
+  }
 }
 
 seed().catch((e) => {
