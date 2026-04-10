@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Repository, Between } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
@@ -25,21 +25,37 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
-  async findAll(elements?: Elements[]) {
-    // console.log('findAll:');
-    // console.log({ elements });
+  async findAll(elements?: Elements[], fromBirthday?: Date, toBirthday?: Date) {
+    //console.log(fromBirthday);
+    //console.log(toBirthday);
 
-    if (!elements?.length) return await this.userRepository.find();
+    let result: User[] = [];
 
-    const possibleStarSigns: UserStarSign[] = elements.flatMap(
-      (ele) => StarSignsByElement[ele],
-    );
+    // filter: by element
+    if (elements?.length) {
+      const possibleStarSigns: UserStarSign[] = elements.flatMap(
+        (ele) => StarSignsByElement[ele],
+      );
+      result = await this.applyFilter(result, {
+        starSign: In(possibleStarSigns),
+      });
+    }
 
-    console.log({ possibleStarSigns });
+    // filter: by birthday from and to
+    if (fromBirthday && toBirthday) {
+      result = await this.applyFilter(result, {
+        birthday: Between(fromBirthday, toBirthday),
+      });
+    }
 
-    return this.userRepository.find({
-      where: { starSign: In(possibleStarSigns) },
-    });
+    return result;
+  }
+
+  private async applyFilter(
+    result: User[],
+    where: FindOptionsWhere<User>,
+  ): Promise<User[]> {
+    return [...result, ...(await this.userRepository.find({ where }))];
   }
 
   async findOne(id: number) {

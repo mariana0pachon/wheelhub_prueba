@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   Post,
@@ -23,8 +24,21 @@ export class UsersController {
   }
 
   @Get()
-  findAll(@Query('elements') elements?: Elements[]) {
-    return this.usersService.findAll(elements ? elements : []);
+  findAll(
+    @Query('elements') elements?: Elements[],
+    @Query('fromBirthday') fromBirthday?: string,
+    @Query('toBirthday') toBirthday?: string,
+  ) {
+    if ((fromBirthday === undefined) !== (toBirthday === undefined)) {
+      throw new BadRequestException(
+        'both fromBirthday and toBirthday should be defined',
+      );
+    }
+    return this.usersService.findAll(
+      elements ? elements : [],
+      fromBirthday ? new Date(fromBirthday) : undefined,
+      toBirthday ? new Date(toBirthday) : undefined,
+    );
   }
 
   @Get(':id')
