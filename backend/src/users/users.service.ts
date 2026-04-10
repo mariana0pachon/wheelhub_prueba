@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, In, Repository, Between } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
@@ -26,36 +26,27 @@ export class UsersService {
   }
 
   async findAll(elements?: Elements[], fromBirthday?: Date, toBirthday?: Date) {
-    //console.log(fromBirthday);
-    //console.log(toBirthday);
-
-    let result: User[] = [];
+    const query = this.userRepository.createQueryBuilder('user').where('1=1');
 
     // filter: by element
     if (elements?.length) {
       const possibleStarSigns: UserStarSign[] = elements.flatMap(
         (ele) => StarSignsByElement[ele],
       );
-      result = await this.applyFilter(result, {
-        starSign: In(possibleStarSigns),
+      query.andWhere('user.starSign IN (:...starSigns)', {
+        starSigns: possibleStarSigns,
       });
     }
 
     // filter: by birthday from and to
     if (fromBirthday && toBirthday) {
-      result = await this.applyFilter(result, {
-        birthday: Between(fromBirthday, toBirthday),
+      query.andWhere('user.birthday BETWEEN :from AND :to', {
+        from: fromBirthday,
+        to: toBirthday,
       });
     }
 
-    return result;
-  }
-
-  private async applyFilter(
-    result: User[],
-    where: FindOptionsWhere<User>,
-  ): Promise<User[]> {
-    return [...result, ...(await this.userRepository.find({ where }))];
+    return query.getMany();
   }
 
   async findOne(id: number) {
