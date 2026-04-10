@@ -28,16 +28,42 @@ export class UsersController {
     @Query('elements') elements?: Elements[],
     @Query('fromBirthday') fromBirthday?: string,
     @Query('toBirthday') toBirthday?: string,
+    @Query('fromLuckyNumber') fromLuckyNumber?: number,
+    @Query('toLuckyNumber') toLuckyNumber?: number,
   ) {
     if ((!fromBirthday && toBirthday) || (fromBirthday && !toBirthday)) {
       throw new BadRequestException(
         'both fromBirthday and toBirthday should be defined',
       );
     }
+
+    if (
+      (!fromLuckyNumber && toLuckyNumber) ||
+      (fromLuckyNumber && !toLuckyNumber)
+    ) {
+      throw new BadRequestException(
+        'both fromLuckyNumber and toLuckyNumber should be defined',
+      );
+    }
+
+    if (
+      fromLuckyNumber &&
+      toLuckyNumber &&
+      (fromLuckyNumber < 0 ||
+        toLuckyNumber < 0 ||
+        fromLuckyNumber > toLuckyNumber)
+    ) {
+      throw new BadRequestException(
+        'fromLuckyNumber must be <= than toLuckyNumber and they should both be >=0',
+      );
+    }
+
     return this.usersService.findAll(
       elements ? [elements].flat() : [],
       fromBirthday ? new Date(fromBirthday) : undefined,
       toBirthday ? new Date(toBirthday) : undefined,
+      fromLuckyNumber ? fromLuckyNumber : undefined,
+      toLuckyNumber ? toLuckyNumber : undefined,
     );
   }
 

@@ -25,7 +25,13 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
-  async findAll(elements?: Elements[], fromBirthday?: Date, toBirthday?: Date) {
+  async findAll(
+    elements?: Elements[],
+    fromBirthday?: Date,
+    toBirthday?: Date,
+    fromLuckyNumber?: number,
+    toLuckyNumber?: number,
+  ) {
     const query = this.userRepository.createQueryBuilder('user').where('1=1');
 
     // filter: by element
@@ -43,6 +49,14 @@ export class UsersService {
       query.andWhere('user.birthday BETWEEN :from AND :to', {
         from: fromBirthday,
         to: toBirthday,
+      });
+    }
+
+    // filter: by luckyNumber from and to
+    if (fromLuckyNumber && toLuckyNumber) {
+      query.andWhere('user.luckyNumber BETWEEN :from AND :to', {
+        from: fromLuckyNumber,
+        to: toLuckyNumber,
       });
     }
 
