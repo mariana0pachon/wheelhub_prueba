@@ -76,8 +76,8 @@ export class UsersController {
       elements ? [elements].flat() : [],
       fromBirthdate,
       toBirthdate,
-      fromLuckyNumber ? fromLuckyNumber : undefined,
-      toLuckyNumber ? toLuckyNumber : undefined,
+      fromLuckyNumber,
+      toLuckyNumber,
     );
   }
 
