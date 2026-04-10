@@ -46,6 +46,13 @@ COPY . .
 RUN npm run build
 
 ################################################################################
+# Development stage with hot reload.
+FROM build as dev
+
+EXPOSE 8080
+CMD npm run dev
+
+################################################################################
 # Create a new stage to run the application with minimal runtime dependencies
 # where the necessary files are copied from the build stage.
 FROM base as final

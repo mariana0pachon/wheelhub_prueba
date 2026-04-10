@@ -5,3 +5,12 @@ services:
       target: dev
     volumes:
       - ./backend/src:/usr/src/app/src
+
+  frontend:
+    build:
+      context: ./frontend
+      target: dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend/src:/usr/src/app/src
