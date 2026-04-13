@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Form, Checkbox, Table, Tag, Slider, DatePicker, Pagination } from 'antd';
 import dayjs, { type Dayjs } from 'dayjs';
 
@@ -54,6 +54,7 @@ const columns = [
 const PAGE_SIZE = 5;
 
 export default function UsersPage() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [users, setUsers] = useState<User[]>([]);
   const [total, setTotal] = useState(0);
@@ -145,7 +146,7 @@ export default function UsersPage() {
           onChange={(values) => handleElementsChange(values as string[])}
         />
       </Form.Item>
-      <Form.Item label='Número de la suerte'>
+      <Form.Item label='Número de la suerte (> 0)'>
         <Slider
           range
           min={0}
@@ -166,6 +167,10 @@ export default function UsersPage() {
         dataSource={users}
         loading={loading}
         pagination={false}
+        onRow={(user) => ({
+          onClick: () => navigate(`/users/${user.id}`),
+          style: { cursor: 'pointer' },
+        })}
       />
       <Pagination
         simple
