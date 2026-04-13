@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Form, Checkbox, Table, Tag, Slider } from 'antd';
+import { Form, Checkbox, Table, Tag, Slider, DatePicker } from 'antd';
+import dayjs, { type Dayjs } from 'dayjs';
 
 // TODO: these could come from backend enum directly
 const ELEMENTS = ['fuego', 'aire', 'agua', 'tierra'];
@@ -59,6 +60,8 @@ export default function UsersPage() {
   const elements = searchParams.getAll('elements');
   const fromLuckyNumber = searchParams.get('fromLuckyNumber');
   const toLuckyNumber = searchParams.get('toLuckyNumber');
+  const fromBirthday = searchParams.get('fromBirthday');
+  const toBirthday = searchParams.get('toBirthday');
 
   useEffect(() => {
     fetch(`/api/users?${searchParams}`)
@@ -86,8 +89,29 @@ export default function UsersPage() {
   function handleLuckyRangeChange(values: [number, number]) {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
-      next.set('fromLuckyNumber', String(values[0]));
-      next.set('toLuckyNumber', String(values[1]));
+
+      if (values[0] == 0 && values[1] == 0) {
+        next.delete('fromLuckyNumber');
+        next.delete('toLuckyNumber');
+      } else {
+        next.set('fromLuckyNumber', String(values[0]));
+        next.set('toLuckyNumber', String(values[1]));
+      }
+
+      return next;
+    });
+  }
+
+  function handleBirthdayRangeChange(values: [Dayjs | null, Dayjs | null] | null) {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (values?.[0] && values?.[1]) {
+        next.set('fromBirthday', values[0].format('YYYY-MM-DD'));
+        next.set('toBirthday', values[1].format('YYYY-MM-DD'));
+      } else {
+        next.delete('fromBirthday');
+        next.delete('toBirthday');
+      }
       return next;
     });
   }
@@ -107,10 +131,16 @@ export default function UsersPage() {
       <Form.Item label='Número de la suerte'>
         <Slider
           range
-          min={1}
+          min={0}
           max={100}
           value={[Number(fromLuckyNumber), Number(toLuckyNumber)]}
           onChange={(values) => handleLuckyRangeChange(values as [number, number])}
+        />
+      </Form.Item>
+      <Form.Item label='Cumpleaños'>
+        <DatePicker.RangePicker
+          value={[fromBirthday ? dayjs(fromBirthday) : null, toBirthday ? dayjs(toBirthday) : null]}
+          onChange={handleBirthdayRangeChange}
         />
       </Form.Item>
       <Table
