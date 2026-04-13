@@ -48,18 +48,18 @@ export class UsersService {
 
     // filter: by birthday from and to
     if (fromBirthday && toBirthday) {
-      query.andWhere('user.birthday BETWEEN :from AND :to', {
-        from: fromBirthday,
-        to: toBirthday,
+      query.andWhere('user.birthday BETWEEN :fromBirthday AND :toBirthday', {
+        fromBirthday,
+        toBirthday,
       });
     }
 
     // filter: by luckyNumber from and to
     if (fromLuckyNumber && toLuckyNumber) {
-      query.andWhere('user.luckyNumber BETWEEN :from AND :to', {
-        from: fromLuckyNumber,
-        to: toLuckyNumber,
-      });
+      query.andWhere(
+        'user.luckyNumber BETWEEN :fromLuckyNumber AND :toLuckyNumber',
+        { fromLuckyNumber, toLuckyNumber },
+      );
     }
 
     const [data, total] = await query
