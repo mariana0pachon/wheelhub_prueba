@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Form, Checkbox, Table, Tag } from 'antd';
+import { Form, Checkbox, Table, Tag, Slider } from 'antd';
 
 // TODO: these could come from backend enum directly
 const ELEMENTS = ['fuego', 'aire', 'agua', 'tierra'];
@@ -57,6 +57,8 @@ export default function UsersPage() {
   const [error, setError] = useState<string | null>(null);
 
   const elements = searchParams.getAll('elements');
+  const fromLuckyNumber = searchParams.get('fromLuckyNumber');
+  const toLuckyNumber = searchParams.get('toLuckyNumber');
 
   useEffect(() => {
     fetch(`/api/users?${searchParams}`)
@@ -81,6 +83,15 @@ export default function UsersPage() {
     });
   }
 
+  function handleLuckyRangeChange(values: [number, number]) {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set('fromLuckyNumber', String(values[0]));
+      next.set('toLuckyNumber', String(values[1]));
+      return next;
+    });
+  }
+
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -91,6 +102,15 @@ export default function UsersPage() {
           options={ELEMENTS}
           value={elements}
           onChange={(values) => handleElementsChange(values as string[])}
+        />
+      </Form.Item>
+      <Form.Item label='Número de la suerte'>
+        <Slider
+          range
+          min={1}
+          max={100}
+          value={[Number(fromLuckyNumber), Number(toLuckyNumber)]}
+          onChange={(values) => handleLuckyRangeChange(values as [number, number])}
         />
       </Form.Item>
       <Table
