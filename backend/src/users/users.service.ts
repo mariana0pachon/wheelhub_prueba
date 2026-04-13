@@ -64,10 +64,10 @@ export class UsersService {
 
     const [data, total] = await query
       .skip(skip ? skip : 0)
-      .take(limit ? limit : 5)
+      .take(limit ? limit : 100)
       .getManyAndCount();
 
-    return { data, total, limit: limit ? limit : 10, skip: skip ? skip : 0 };
+    return { data, total, limit: limit ? limit : 100, skip: skip ? skip : 0 };
   }
 
   async findOne(id: number) {

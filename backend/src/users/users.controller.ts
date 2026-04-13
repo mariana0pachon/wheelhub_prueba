@@ -8,6 +8,8 @@ import {
   Param,
   Delete,
   Query,
+  ParseIntPipe,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -31,8 +33,8 @@ export class UsersController {
     @Query('toBirthday') toBirthday?: string,
     @Query('fromLuckyNumber') fromLuckyNumber?: number,
     @Query('toLuckyNumber') toLuckyNumber?: number,
-    @Query('limit') limit?: number,
-    @Query('skip') skip?: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit?: number,
+    @Query('skip', new DefaultValuePipe(0), ParseIntPipe) skip?: number,
   ) {
     if ((!fromBirthday && toBirthday) || (fromBirthday && !toBirthday)) {
       throw new BadRequestException(

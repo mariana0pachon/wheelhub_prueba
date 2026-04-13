@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Form, Checkbox, Table, Tag, Slider, DatePicker } from 'antd';
+import { Form, Checkbox, Table, Tag, Slider, DatePicker, Pagination } from 'antd';
 import dayjs, { type Dayjs } from 'dayjs';
 
 // TODO: these could come from backend enum directly
@@ -51,9 +51,12 @@ const columns = [
   },
 ];
 
+const PAGE_SIZE = 5;
+
 export default function UsersPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [users, setUsers] = useState<User[]>([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,12 +65,15 @@ export default function UsersPage() {
   const toLuckyNumber = searchParams.get('toLuckyNumber');
   const fromBirthday = searchParams.get('fromBirthday');
   const toBirthday = searchParams.get('toBirthday');
+  const skip = Number(searchParams.get('skip') ?? 0);
+  const currentPage = Math.floor(skip / PAGE_SIZE) + 1;
 
   useEffect(() => {
-    fetch(`/api/users?${searchParams}`)
+    fetch(`/api/users?${searchParams}&limit=${PAGE_SIZE}`)
       .then((res) => res.json())
       .then((data) => {
         setUsers(data.data);
+        setTotal(data.total);
         setLoading(false);
       })
       .catch((err) => {
@@ -77,11 +83,20 @@ export default function UsersPage() {
       });
   }, [searchParams]);
 
+  function handlePageChange(newPage: number) {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set('skip', String((newPage - 1) * PAGE_SIZE));
+      return next;
+    });
+  }
+
   function handleElementsChange(values: string[]) {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
       next.delete('elements');
       values.forEach((el) => next.append('elements', el));
+      next.delete('skip');
       return next;
     });
   }
@@ -98,6 +113,7 @@ export default function UsersPage() {
         next.set('toLuckyNumber', String(values[1]));
       }
 
+      next.delete('skip');
       return next;
     });
   }
@@ -112,6 +128,7 @@ export default function UsersPage() {
         next.delete('fromBirthday');
         next.delete('toBirthday');
       }
+      next.delete('skip');
       return next;
     });
   }
@@ -149,6 +166,14 @@ export default function UsersPage() {
         dataSource={users}
         loading={loading}
         pagination={false}
+      />
+      <Pagination
+        simple
+        current={currentPage}
+        pageSize={PAGE_SIZE}
+        total={total}
+        onChange={handlePageChange}
+        style={{ marginTop: 16 }}
       />
     </div>
   );
