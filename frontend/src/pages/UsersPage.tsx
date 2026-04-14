@@ -148,7 +148,10 @@ export default function UsersPage() {
         }}
       >
         <h1 style={{ margin: 0 }}>Personajes</h1>
-        <Button icon={<PlusOutlined />} onClick={() => navigate('/users/new')}></Button>
+        <Button
+          icon={<PlusOutlined />}
+          onClick={() => navigate('/users/new', { state: { from: `/users?${searchParams}` } })}
+        ></Button>
       </div>
       <Form.Item label='Signo de'>
         <Checkbox.Group
@@ -179,7 +182,8 @@ export default function UsersPage() {
         loading={loading}
         pagination={false}
         onRow={(user) => ({
-          onClick: () => navigate(`/users/${user.id}`),
+          onClick: () =>
+            navigate(`/users/${user.id}`, { state: { from: `/users?${searchParams}` } }),
           style: { cursor: 'pointer' },
         })}
       />

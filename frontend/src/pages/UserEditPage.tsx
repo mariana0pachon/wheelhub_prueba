@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Button, DatePicker, Descriptions, Input, InputNumber, Spin, Tag } from 'antd';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { Breadcrumb, Button, DatePicker, Descriptions, Input, InputNumber, Spin, Tag } from 'antd';
 import { CloseOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import AvatarCanvas from '../components/AvatarCanvas';
@@ -18,7 +18,11 @@ interface User {
 
 export default function UserEditPage() {
   const { id } = useParams<{ id: string }>();
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const backUrl = location.state?.from || '/users';
+
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -89,6 +93,14 @@ export default function UserEditPage() {
 
   return (
     <div style={{ maxWidth: 800 }}>
+      <Breadcrumb
+        style={{ marginBottom: 16 }}
+        items={[
+          { title: <a onClick={() => navigate(backUrl)}>Personajes</a> },
+          { title: <a onClick={() => navigate(`/users/${id}`)}>{user.name}</a> },
+          { title: 'Editar' },
+        ]}
+      />
       <div
         style={{
           display: 'flex',

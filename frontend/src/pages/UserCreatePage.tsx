@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, DatePicker, Descriptions, Input, InputNumber, Tag } from 'antd';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Breadcrumb, Button, DatePicker, Descriptions, Input, InputNumber, Tag } from 'antd';
 import { CloseOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import AvatarCanvas from '../components/AvatarCanvas';
 
 export default function UserCreatePage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const backUrl = location.state?.from || '/users';
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,6 +54,10 @@ export default function UserCreatePage() {
 
   return (
     <div style={{ maxWidth: 800 }}>
+      <Breadcrumb
+        style={{ marginBottom: 16 }}
+        items={[{ title: <a onClick={() => navigate(backUrl)}>Personajes</a> }, { title: 'Nuevo' }]}
+      />
       {error && <p>Error: {error}</p>}
       <div
         style={{

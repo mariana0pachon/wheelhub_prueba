@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Descriptions, Spin, Tag, Typography } from 'antd';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { Breadcrumb, Button, Descriptions, Spin, Tag, Typography } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 
 interface User {
@@ -16,7 +16,11 @@ interface User {
 
 export default function UserDetailPage() {
   const { id } = useParams<{ id: string }>();
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const backUrl = location.state?.from || '/users';
+
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +47,13 @@ export default function UserDetailPage() {
 
   return (
     <div style={{ maxWidth: 600 }}>
+      <Breadcrumb
+        style={{ marginBottom: 16 }}
+        items={[
+          { title: <a onClick={() => navigate(backUrl)}>Personajes</a> },
+          { title: user.name },
+        ]}
+      />
       <div
         style={{
           display: 'flex',
@@ -54,7 +65,10 @@ export default function UserDetailPage() {
         <Typography.Title level={3} style={{ margin: 0 }}>
           {user.name}
         </Typography.Title>
-        <Button icon={<EditOutlined />} onClick={() => navigate(`/users/${id}/edit`)} />
+        <Button
+          icon={<EditOutlined />}
+          onClick={() => navigate(`/users/${id}/edit`, { state: { from: backUrl } })}
+        />
       </div>
 
       {user.avatar?.svg && (
