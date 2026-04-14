@@ -72,7 +72,11 @@ export default function UserDetailPage() {
         <Descriptions.Item label='signo'>{user.starSign ?? '-'}</Descriptions.Item>
         <Descriptions.Item label='número de la suerte'>{user.luckyNumber ?? '-'}</Descriptions.Item>
         <Descriptions.Item label='superpoderes'>
-          {user.superpowers?.length ? user.superpowers.map((s) => <Tag key={s}>{s}</Tag>) : '-'}
+          <div
+            style={{ display: 'flex', gap: 4, maxWidth: 500, marginBottom: 8, flexWrap: 'wrap' }}
+          >
+            {user.superpowers?.length ? user.superpowers.map((s) => <Tag key={s}>{s}</Tag>) : '-'}
+          </div>
         </Descriptions.Item>
       </Descriptions>
     </div>

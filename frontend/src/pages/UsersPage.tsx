@@ -42,7 +42,7 @@ const columns = [
     render: (superpowers: string[] | null) => {
       if (!superpowers) return '-';
       return (
-        <div className='flex space-between'>
+        <div style={{ display: 'flex', gap: 4, maxWidth: 500, marginBottom: 8, flexWrap: 'wrap' }}>
           {superpowers.slice(0, 3).map((s) => (
             <Tag key={s}>{s}</Tag>
           ))}
