@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Form, Checkbox, Table, Tag, Slider, DatePicker, Pagination } from 'antd';
+import { Button, Form, Checkbox, Table, Tag, Slider, DatePicker, Pagination } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import dayjs, { type Dayjs } from 'dayjs';
 
 // TODO: these could come from backend enum directly
@@ -138,7 +139,17 @@ export default function UsersPage() {
 
   return (
     <div>
-      <h1>Personajes</h1>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 16,
+        }}
+      >
+        <h1 style={{ margin: 0 }}>Personajes</h1>
+        <Button icon={<PlusOutlined />} onClick={() => navigate('/users/new')}></Button>
+      </div>
       <Form.Item label='Signo de'>
         <Checkbox.Group
           options={ELEMENTS}
