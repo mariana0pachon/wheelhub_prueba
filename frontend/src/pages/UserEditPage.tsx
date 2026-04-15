@@ -27,6 +27,7 @@ export default function UserEditPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ name?: string }>({});
 
   const [name, setName] = useState('');
   const [birthday, setBirthday] = useState<string | null>(null);
@@ -55,7 +56,15 @@ export default function UserEditPage() {
       });
   }, [id]);
 
+  function validate() {
+    const errors: { name?: string } = {};
+    if (!name.trim()) errors.name = 'El nombre es obligatorio';
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
   async function handleSave() {
+    if (!validate()) return;
     setSaving(true);
     const avatar = avatarDraft ?? user?.avatar;
 
@@ -109,13 +118,18 @@ export default function UserEditPage() {
           marginBottom: 24,
         }}
       >
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder='nombre'
-          size='large'
-          style={{ maxWidth: 600 }}
-        />
+        <div style={{ maxWidth: 600, flex: 1 }}>
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder='nombre'
+            size='large'
+            status={fieldErrors.name ? 'error' : ''}
+          />
+          {fieldErrors.name && (
+            <span style={{ color: '#ff4d4f', fontSize: 12 }}>{fieldErrors.name}</span>
+          )}
+        </div>
         <Button icon={<CloseOutlined />} onClick={() => navigate(`/users/${id}`)} size='large' />
         <Button icon={<SaveOutlined />} onClick={handleSave} loading={saving} size='large' />
       </div>
@@ -135,7 +149,7 @@ export default function UserEditPage() {
           />
         </Descriptions.Item>
         <Descriptions.Item label='número de la suerte'>
-          <InputNumber value={luckyNumber} onChange={(v) => setLuckyNumber(v)} />
+          <InputNumber value={luckyNumber} onChange={(v) => setLuckyNumber(v)} min={0} />
         </Descriptions.Item>
         <Descriptions.Item label='superpoderes'>
           <div
