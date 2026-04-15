@@ -1,5 +1,7 @@
 # Prueba de Wheelhub
 
+https://github.com/user-attachments/assets/f9efb1c6-024a-465d-b6e2-1e9e1dacf112
+
 Una base de datos de personajes históricos con sus signos del zodiaco y sus superpoderes.
 
 (Disclaimer: todo está en Spanglish... así funciona mi mente cuando estoy programando)
